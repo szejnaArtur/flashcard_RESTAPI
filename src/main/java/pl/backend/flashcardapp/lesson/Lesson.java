@@ -1,25 +1,24 @@
 package pl.backend.flashcardapp.lesson;
 
-import javax.persistence.Column;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+
+@NoArgsConstructor
 @Entity
-@Table(name = "lessons")
 class Lesson {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @NotNull
-    @Column(unique = true)
     private String name;
     private String level;
+
 
     Lesson(final Long id, final String name, final String level) {
         this.id = id;
@@ -27,7 +26,10 @@ class Lesson {
         this.level = level;
     }
 
-    public Lesson() {
+    Lesson(final LessonDto dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.level = dto.getLevel();
     }
 
     Long getId() {

@@ -1,11 +1,11 @@
 package pl.backend.flashcardapp.lesson;
 
-import javax.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 class LessonDto {
 
     private Long id;
-    @NotNull
     private String name;
     private String level;
 
@@ -15,7 +15,17 @@ class LessonDto {
         this.level = level;
     }
 
-    Long getId() {
+    LessonDto(final Lesson lesson) {
+        this.id = lesson.getId();
+        this.name = lesson.getName();
+        this.level = lesson.getLevel();
+    }
+
+    boolean isEmpty(){
+        return name == null || name.equals("");
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -23,7 +33,7 @@ class LessonDto {
         this.id = id;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -31,7 +41,7 @@ class LessonDto {
         this.name = name;
     }
 
-    String getLevel() {
+    public String getLevel() {
         return level;
     }
 

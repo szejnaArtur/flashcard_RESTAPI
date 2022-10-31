@@ -3,16 +3,14 @@ package pl.backend.flashcardapp.lesson;
 import java.util.List;
 
 interface LessonService {
-    LessonDto findById(Long id);
-    LessonDto findByName(String name);
-    LessonDto findByLevel(String level);
 
     List<LessonDto> findAll();
+//    List<LessonDto> findAllByLevel(String level);
 
-    LessonDto save(LessonDto dto);
-    LessonDto update(LessonDto dto);
+    LessonDto findById(Long id);
+//    LessonDto findByName(String name);
 
-    void deleteById(Long id);
-    void deleteByName(String name);
+    Lesson save(LessonDto lessonDto);
+//    LessonDto update(LessonDto lessonDto);
 
 }
