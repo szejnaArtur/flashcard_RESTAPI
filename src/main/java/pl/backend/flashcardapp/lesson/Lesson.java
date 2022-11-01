@@ -5,13 +5,15 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
 
 @NoArgsConstructor
 @Entity
-class Lesson {
+@Table(name = "lessons")
+public class Lesson {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -19,40 +21,35 @@ class Lesson {
     private String name;
     private String level;
 
-
     Lesson(final Long id, final String name, final String level) {
         this.id = id;
         this.name = name;
         this.level = level;
     }
 
-    Lesson(final LessonDto dto) {
+    public Lesson(final LessonDto dto) {
         this.id = dto.getId();
         this.name = dto.getName();
         this.level = dto.getLevel();
     }
 
-    Long getId() {
-        return id;
+    LessonDto toDto() {
+        return LessonDto.builder()
+                .withId(id)
+                .withName(name)
+                .withLevel(level)
+                .build();
     }
 
-    void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     String getName() {
         return name;
     }
 
-    void setName(final String name) {
-        this.name = name;
-    }
-
     String getLevel() {
         return level;
-    }
-
-    void setLevel(final String level) {
-        this.level = level;
     }
 }

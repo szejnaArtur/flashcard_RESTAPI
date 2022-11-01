@@ -15,20 +15,20 @@ import java.util.List;
 @RequestMapping("/lessons")
 class LessonController {
 
-    private final LessonService lessonService;
+    private final LessonFacade lessonFacade;
 
-    LessonController(final LessonService lessonService) {
-        this.lessonService = lessonService;
+    LessonController(final LessonFacade lessonFacade) {
+        this.lessonFacade = lessonFacade;
     }
 
     @GetMapping
     List<LessonDto> findAll() {
-        return lessonService.findAll();
+        return lessonFacade.findAll();
     }
 
     @GetMapping("/{id}")
     ResponseEntity<LessonDto> findById(@PathVariable Long id){
-        LessonDto dto = lessonService.findById(id);
+        LessonDto dto = lessonFacade.findById(id);
         if (dto == null){
             return ResponseEntity.notFound().build();
         }
@@ -40,8 +40,14 @@ class LessonController {
         if (lessonDto.isEmpty()){
             return ResponseEntity.badRequest().build();
         }
-        Lesson result = lessonService.save(lessonDto);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(new LessonDto(result));
+        Lesson result = lessonFacade.save(lessonDto);
+        return ResponseEntity.created(URI.create("/" + result.getId())).body(
+                LessonDto.builder()
+                        .withId(result.getId())
+                        .withName(result.getName())
+                        .withLevel(result.getLevel())
+                        .build()
+        );
     }
 
 }

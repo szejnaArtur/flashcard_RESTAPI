@@ -1,27 +1,35 @@
 package pl.backend.flashcardapp.lesson;
 
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@NoArgsConstructor
-class LessonDto {
+@JsonDeserialize
+public class LessonDto {
 
-    private Long id;
-    private String name;
-    private String level;
-
-    LessonDto(final Long id, final String name, final String level) {
-        this.id = id;
-        this.name = name;
-        this.level = level;
+    public static Builder builder() {
+        return new Builder();
     }
 
-    LessonDto(final Lesson lesson) {
-        this.id = lesson.getId();
-        this.name = lesson.getName();
-        this.level = lesson.getLevel();
+    private final Long id;
+    private final String name;
+    private final String level;
+
+    private LessonDto(final Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.level = builder.level;
     }
 
-    boolean isEmpty(){
+    public Builder toBuilder(){
+        return builder()
+                .withId(id)
+                .withName(name)
+                .withLevel(level);
+    }
+
+
+
+    public boolean isEmpty() {
         return name == null || name.equals("");
     }
 
@@ -29,23 +37,41 @@ class LessonDto {
         return id;
     }
 
-    void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    void setName(final String name) {
-        this.name = name;
     }
 
     public String getLevel() {
         return level;
     }
 
-    void setLevel(final String level) {
-        this.level = level;
+    @JsonPOJOBuilder
+    public static class Builder {
+
+        private Long id;
+        private String name;
+        private String level;
+
+        private Builder() {
+        }
+
+        public LessonDto build() {
+            return new LessonDto(this);
+        }
+
+        public Builder withId(final Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withLevel(final String level) {
+            this.level = level;
+            return this;
+        }
     }
 }
