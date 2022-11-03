@@ -1,9 +1,9 @@
 package pl.backend.flashcardapp.word;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pl.backend.flashcardapp.lesson.Lesson;
+import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryDto;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +15,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "words")
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Word {
+class Word {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +32,22 @@ public class Word {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
-    private Lesson lesson;
+    private SimpleLessonQueryDto lesson;
 
-    Word(WordDto dto, Lesson lesson) {
+    Word(WordDto dto, SimpleLessonQueryDto lesson) {
         this.id = dto.getId();
         this.text = dto.getText();
         this.language = dto.getLanguage();
         this.pairCode = dto.getPairCode();
         this.lesson = lesson;
+    }
+
+    WordDto toDto() {
+        return WordDto.builder()
+                .withId(id)
+                .withText(text)
+                .withLanguage(language)
+                .withPairCode(pairCode)
+                .build();
     }
 }

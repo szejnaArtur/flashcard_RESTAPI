@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.backend.flashcardapp.word.WordDto;
 
 import java.net.URI;
 import java.util.List;
@@ -40,14 +41,7 @@ class LessonController {
         if (lessonDto.isEmpty()){
             return ResponseEntity.badRequest().build();
         }
-        Lesson result = lessonFacade.save(lessonDto);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(
-                LessonDto.builder()
-                        .withId(result.getId())
-                        .withName(result.getName())
-                        .withLevel(result.getLevel())
-                        .build()
-        );
+        LessonDto result = lessonFacade.save(lessonDto);
+        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
-
 }

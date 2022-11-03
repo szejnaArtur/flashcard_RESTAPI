@@ -1,6 +1,7 @@
 package pl.backend.flashcardapp.lesson;
 
 import org.springframework.stereotype.Service;
+import pl.backend.flashcardapp.word.WordDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,34 +11,27 @@ import java.util.stream.Collectors;
 public class LessonFacade {
 
     private final LessonRepository lessonRepository;
+    private final LessonFactory lessonFactory;
 
-    LessonFacade(final LessonRepository lessonRepository) {
+    LessonFacade(final LessonRepository lessonRepository, final LessonFactory lessonFactory) {
         this.lessonRepository = lessonRepository;
+        this.lessonFactory = lessonFactory;
     }
 
     List<LessonDto> findAll() {
         return lessonRepository.findAll().stream()
-                .map(lesson -> LessonDto.builder()
-                        .withId(lesson.getId())
-                        .withName(lesson.getName())
-                        .withLevel(lesson.getLevel())
-                        .build()
-                ).collect(Collectors.toList());
+                .map(Lesson::toDto).collect(Collectors.toList());
     }
 
     public LessonDto findById(final Long id) {
         Optional<Lesson> optionalLesson = lessonRepository.findById(id);
         return optionalLesson
-                .map(lesson -> LessonDto.builder()
-                        .withId(lesson.getId())
-                        .withName(lesson.getName())
-                        .withLevel(lesson.getLevel())
-                        .build()
-                ).orElse(null);
+                .map(Lesson::toDto)
+                .orElse(null);
     }
 
-    Lesson save(final LessonDto lessonDto) {
-        Lesson toSave = new Lesson(lessonDto);
-        return lessonRepository.save(toSave);
+    LessonDto save(final LessonDto lessonDto) {
+        Lesson toSave = lessonFactory.from(lessonDto);
+        return lessonRepository.save(toSave).toDto();
     }
 }

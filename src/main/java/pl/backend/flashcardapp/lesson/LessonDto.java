@@ -27,8 +27,6 @@ public class LessonDto {
                 .withLevel(level);
     }
 
-
-
     public boolean isEmpty() {
         return name == null || name.equals("");
     }

@@ -1,30 +1,83 @@
 package pl.backend.flashcardapp.word;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@JsonDeserialize
 public class WordDto {
 
-    private Long id;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    private String text;
+    private final Long id;
+    private final String text;
+    private final String language;
+    private final String pairCode;
 
-    private String language;
+    private WordDto(final Builder builder) {
+        this.id = builder.id;
+        this.text = builder.text;
+        this.language = builder.language;
+        this.pairCode = builder.pairCode;
+    }
 
-    private String pairCode;
+    public Builder toBuilder() {
+        return builder()
+                .withId(id)
+                .withText(text)
+                .withLanguage(language)
+                .withPairCode(pairCode);
+    }
 
-    private Long lessonId;
+    public Long getId() {
+        return id;
+    }
 
+    public String getText() {
+        return text;
+    }
 
-    WordDto(Word word) {
-        this.id = word.getId();
-        this.text = word.getText();
-        this.language = word.getLanguage();
-        this.pairCode = word.getPairCode();
-        this.lessonId = word.getLesson().getId();
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getPairCode() {
+        return pairCode;
+    }
+
+    @JsonPOJOBuilder
+    public static class Builder {
+        private Long id;
+        private String text;
+        private String language;
+        private String pairCode;
+
+        private Builder() {
+        }
+
+        public WordDto build() {
+            return new WordDto(this);
+        }
+
+        public Builder withId(final Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withText(final String text) {
+            this.text = text;
+            return this;
+        }
+
+        public Builder withLanguage(final String language) {
+            this.language = language;
+            return this;
+        }
+
+        public Builder withPairCode(final String pairCode) {
+            this.pairCode = pairCode;
+            return this;
+        }
     }
 }

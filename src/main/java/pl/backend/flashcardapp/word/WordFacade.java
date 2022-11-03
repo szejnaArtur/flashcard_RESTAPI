@@ -1,8 +1,8 @@
 package pl.backend.flashcardapp.word;
 
 import org.springframework.stereotype.Service;
-import pl.backend.flashcardapp.lesson.Lesson;
 import pl.backend.flashcardapp.lesson.LessonFacade;
+import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryDto;
 
 import java.util.List;
 
@@ -12,25 +12,26 @@ import static java.util.stream.Collectors.toList;
 public class WordFacade {
 
     private final WordRepository wordRepository;
-    private final LessonFacade lessonService;
+    private final WordFactory wordFactory;
 
-    WordFacade(final WordRepository wordRepository, final LessonFacade lessonService) {
+    WordFacade(final WordRepository wordRepository, final WordFactory wordFactory) {
         this.wordRepository = wordRepository;
-        this.lessonService = lessonService;
+        this.wordFactory = wordFactory;
     }
 
     List<WordDto> findAll() {
         return wordRepository.findAll().stream()
-                .map(WordDto::new).collect(toList());
+                .map(Word::toDto).collect(toList());
     }
 
     List<WordDto> findByLessonId(final Long id) {
         return wordRepository.findAllByLessonId(id).stream()
-                .map(WordDto::new).collect(toList());
+                .map(Word::toDto).collect(toList());
     }
 
-    Word save(final WordDto dto) {
-        Lesson lesson = new Lesson(lessonService.findById(dto.getLessonId()));
-        return wordRepository.save(new Word(dto, lesson));
+    public WordDto save(final WordDto word, final SimpleLessonQueryDto lesson) {
+        return wordRepository.save(
+                wordFactory.from(word, lesson)
+        ).toDto();
     }
 }

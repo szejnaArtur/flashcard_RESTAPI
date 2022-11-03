@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Table(name = "lessons")
-public class Lesson {
+class Lesson {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -27,12 +27,6 @@ public class Lesson {
         this.level = level;
     }
 
-    public Lesson(final LessonDto dto) {
-        this.id = dto.getId();
-        this.name = dto.getName();
-        this.level = dto.getLevel();
-    }
-
     LessonDto toDto() {
         return LessonDto.builder()
                 .withId(id)
@@ -41,15 +35,27 @@ public class Lesson {
                 .build();
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
+    }
+
+    void setId(final Long id) {
+        this.id = id;
     }
 
     String getName() {
         return name;
     }
 
+    void setName(final String name) {
+        this.name = name;
+    }
+
     String getLevel() {
         return level;
+    }
+
+    void setLevel(final String level) {
+        this.level = level;
     }
 }
