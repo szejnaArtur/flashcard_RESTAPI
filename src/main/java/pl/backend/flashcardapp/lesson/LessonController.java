@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.backend.flashcardapp.word.WordDto;
+import pl.backend.flashcardapp.lesson.dto.LessonDto;
 
 import java.net.URI;
 import java.util.List;
@@ -17,28 +17,28 @@ import java.util.List;
 class LessonController {
 
     private final LessonFacade lessonFacade;
+    private final LessonQueryRepository lessonQueryRepository;
 
-    LessonController(final LessonFacade lessonFacade) {
+    LessonController(final LessonFacade lessonFacade, final LessonQueryRepository lessonQueryRepository) {
         this.lessonFacade = lessonFacade;
+        this.lessonQueryRepository = lessonQueryRepository;
     }
 
     @GetMapping
-    List<LessonDto> findAll() {
-        return lessonFacade.findAll();
+    ResponseEntity<List<LessonDto>> findAll() {
+        return ResponseEntity.ok().body(lessonQueryRepository.findAllBy());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<LessonDto> findById(@PathVariable Long id){
-        LessonDto dto = lessonFacade.findById(id);
-        if (dto == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().body(dto);
+    ResponseEntity<LessonDto> findById(@PathVariable Long id) {
+        return lessonQueryRepository.findDtoById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    ResponseEntity<LessonDto> save(@RequestBody LessonDto lessonDto){
-        if (lessonDto.isEmpty()){
+    ResponseEntity<LessonDto> save(@RequestBody LessonDto lessonDto) {
+        if (lessonDto.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         LessonDto result = lessonFacade.save(lessonDto);

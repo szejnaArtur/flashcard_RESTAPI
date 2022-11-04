@@ -1,10 +1,7 @@
-package pl.backend.flashcardapp.word;
+package pl.backend.flashcardapp.word.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-@JsonDeserialize
-public class WordDto {
+public
+class WordDto {
 
     public static Builder builder() {
         return new Builder();
@@ -14,12 +11,14 @@ public class WordDto {
     private final String text;
     private final String language;
     private final String pairCode;
+    private final String partOfSpeech;
 
-    private WordDto(final Builder builder) {
-        this.id = builder.id;
-        this.text = builder.text;
-        this.language = builder.language;
-        this.pairCode = builder.pairCode;
+    public WordDto(final Long id, final String text, final String language, final String pairCode, final String partOfSpeech) {
+        this.id = id;
+        this.text = text;
+        this.language = language;
+        this.pairCode = pairCode;
+        this.partOfSpeech = partOfSpeech;
     }
 
     public Builder toBuilder() {
@@ -27,7 +26,8 @@ public class WordDto {
                 .withId(id)
                 .withText(text)
                 .withLanguage(language)
-                .withPairCode(pairCode);
+                .withPairCode(pairCode)
+                .withPartOfSpeech(partOfSpeech);
     }
 
     public Long getId() {
@@ -46,18 +46,29 @@ public class WordDto {
         return pairCode;
     }
 
-    @JsonPOJOBuilder
+    public String getPartOfSpeech() {
+        return partOfSpeech;
+    }
+
     public static class Builder {
         private Long id;
         private String text;
         private String language;
         private String pairCode;
+        private String partOfSpeech;
+
 
         private Builder() {
         }
 
         public WordDto build() {
-            return new WordDto(this);
+            return new WordDto(
+                    id,
+                    text,
+                    language,
+                    pairCode,
+                    partOfSpeech
+            );
         }
 
         public Builder withId(final Long id) {
@@ -77,6 +88,11 @@ public class WordDto {
 
         public Builder withPairCode(final String pairCode) {
             this.pairCode = pairCode;
+            return this;
+        }
+
+        public Builder withPartOfSpeech(final String partOfSpeech) {
+            this.partOfSpeech = partOfSpeech;
             return this;
         }
     }

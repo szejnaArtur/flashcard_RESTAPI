@@ -7,42 +7,62 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.backend.flashcardapp.lesson.LessonDto;
-import pl.backend.flashcardapp.lesson.LessonFacade;
+import pl.backend.flashcardapp.lesson.LessonQueryRepository;
 import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryDto;
+import pl.backend.flashcardapp.word.dto.WordDto;
+import pl.backend.flashcardapp.word.dto.WordWithoutPartOfSpeechDto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping
 class WordController {
 
     private final WordFacade wordFacade;
-    private final LessonFacade lessonFacade;
+    private final LessonQueryRepository lessonQueryRepository;
+    private final WordQueryRepository wordQueryRepository;
 
-    WordController(final WordFacade wordFacade, final LessonFacade lessonFacade) {
+    WordController(final WordFacade wordFacade, final LessonQueryRepository lessonQueryRepository, final WordQueryRepository wordQueryRepository) {
         this.wordFacade = wordFacade;
-        this.lessonFacade = lessonFacade;
+        this.lessonQueryRepository = lessonQueryRepository;
+        this.wordQueryRepository = wordQueryRepository;
     }
 
     @GetMapping("/words")
     ResponseEntity<List<WordDto>> findAll() {
-        return ResponseEntity.ok().body(wordFacade.findAll());
+        return ResponseEntity.ok().body(wordQueryRepository.findAllBy());
+    }
+
+    @GetMapping("/words/{id}")
+    ResponseEntity<WordDto> findById(@PathVariable Long id) {
+        return wordQueryRepository.findDtoById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/words/lesson/{id}")
     ResponseEntity<List<WordDto>> findAllByLessonId(@PathVariable Long id) {
-        return ResponseEntity.ok().body(wordFacade.findByLessonId(id));
+        return ResponseEntity.ok().body(wordQueryRepository.findAllByLessonId(id));
     }
 
     @PostMapping("/lessons/{id}/word")
-    WordDto createWord(@PathVariable Long id, @RequestBody WordDto dto){
-        LessonDto lessonDto = lessonFacade.findById(id);
+    WordDto createWord(@PathVariable Long id, @RequestBody WordDto dto) {
+        Optional<SimpleLessonQueryDto> optionalSimpleLessonQueryDto = lessonQueryRepository.findDtoById(id)
+                .map(lesson -> new SimpleLessonQueryDto(
+                        lesson.getId(),
+                        lesson.getName(),
+                        lesson.getLevel())
+                );
 
-        return wordFacade.save(dto, new SimpleLessonQueryDto(
-                lessonDto.getId(),
-                lessonDto.getName(),
-                lessonDto.getLevel()
-        ));
+        return optionalSimpleLessonQueryDto
+                .map(simpleLessonQueryDto -> wordFacade.save(dto, simpleLessonQueryDto))
+                .orElse(null);
+    }
+
+    @GetMapping("/words/min_info")
+    List<WordWithoutPartOfSpeechDto> listWithChanges() {
+        return new ArrayList<>(wordQueryRepository.findBy(WordWithoutPartOfSpeechDto.class));
     }
 }

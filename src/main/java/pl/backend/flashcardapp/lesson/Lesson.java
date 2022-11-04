@@ -1,6 +1,7 @@
 package pl.backend.flashcardapp.lesson;
 
 import lombok.NoArgsConstructor;
+import pl.backend.flashcardapp.lesson.dto.LessonDto;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,9 +1,5 @@
-package pl.backend.flashcardapp.lesson;
+package pl.backend.flashcardapp.lesson.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-@JsonDeserialize
 public class LessonDto {
 
     public static Builder builder() {
@@ -14,13 +10,13 @@ public class LessonDto {
     private final String name;
     private final String level;
 
-    private LessonDto(final Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.level = builder.level;
+    public LessonDto(final Long id, final String name, final String level) {
+        this.id = id;
+        this.name = name;
+        this.level = level;
     }
 
-    public Builder toBuilder(){
+    public Builder toBuilder() {
         return builder()
                 .withId(id)
                 .withName(name)
@@ -43,7 +39,7 @@ public class LessonDto {
         return level;
     }
 
-    @JsonPOJOBuilder
+
     public static class Builder {
 
         private Long id;
@@ -54,7 +50,11 @@ public class LessonDto {
         }
 
         public LessonDto build() {
-            return new LessonDto(this);
+            return new LessonDto(
+                    id,
+                    name,
+                    level
+            );
         }
 
         public Builder withId(final Long id) {
