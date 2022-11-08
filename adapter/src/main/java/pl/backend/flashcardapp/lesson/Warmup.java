@@ -6,13 +6,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.stream.Collectors.toList;
 
 @Component("lessonWarmup")
 class Warmup implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final LessonRepository lessonRepository;
+    private final SqlLessonRepositories lessonRepository;
 
-    Warmup(final LessonRepository lessonRepository) {
+    Warmup(final SqlLessonRepositories lessonRepository) {
         this.lessonRepository = lessonRepository;
     }
 
@@ -26,7 +27,9 @@ class Warmup implements ApplicationListener<ContextRefreshedEvent> {
             lessons.add(new Lesson(null, "Body language", null));
             lessons.add(new Lesson(null, "The home", "Basic"));
 
-            lessonRepository.saveAll(lessons);
+            lessonRepository.saveAll(
+                    lessons.stream().map(SqlLesson::fromWord).collect(toList())
+            );
         }
     }
 }

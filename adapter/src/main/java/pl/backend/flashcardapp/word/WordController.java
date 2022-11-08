@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.backend.flashcardapp.lesson.LessonQueryRepository;
-import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryDto;
+import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryEntity;
 import pl.backend.flashcardapp.word.dto.WordDto;
 import pl.backend.flashcardapp.word.dto.WordWithoutPartOfSpeechDto;
 
@@ -32,7 +32,7 @@ class WordController {
 
     @GetMapping("/words")
     ResponseEntity<List<WordDto>> findAll() {
-        return ResponseEntity.ok().body(wordQueryRepository.findAllBy());
+        return ResponseEntity.ok().body(new ArrayList<>(wordQueryRepository.findBy(WordDto.class)));
     }
 
     @GetMapping("/words/{id}")
@@ -49,8 +49,8 @@ class WordController {
 
     @PostMapping("/lessons/{id}/word")
     WordDto createWord(@PathVariable Long id, @RequestBody WordDto dto) {
-        Optional<SimpleLessonQueryDto> optionalSimpleLessonQueryDto = lessonQueryRepository.findDtoById(id)
-                .map(lesson -> new SimpleLessonQueryDto(
+        Optional<SimpleLessonQueryEntity> optionalSimpleLessonQueryDto = lessonQueryRepository.findDtoById(id)
+                .map(lesson -> new SimpleLessonQueryEntity(
                         lesson.getId(),
                         lesson.getName(),
                         lesson.getLevel())

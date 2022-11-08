@@ -1,6 +1,6 @@
 package pl.backend.flashcardapp.word;
 
-import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryDto;
+import pl.backend.flashcardapp.lesson.query.SimpleLessonQueryEntity;
 import pl.backend.flashcardapp.word.dto.WordDto;
 
 public class WordFacade {
@@ -13,7 +13,7 @@ public class WordFacade {
         this.wordFactory = wordFactory;
     }
 
-    public WordDto save(final WordDto word, final SimpleLessonQueryDto lesson) {
+    public WordDto save(final WordDto word, final SimpleLessonQueryEntity lesson) {
         return toDto(wordRepository.save(
                 wordFactory.from(word, lesson)
         ));
